@@ -1,0 +1,25 @@
+{
+  "name": "rwanda-tour-backend",
+  "version": "1.0.0",
+  "description": "this platform for booking tours",
+  "main": "server.js",
+  "scripts": {
+    "start": "babel-node ./server.js",
+    "dev-start": "babel-node ./server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.12.10",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.12.10",
+    "@types/node": "^14.14.22",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1"
+  },
+  "author": "Benjamin",
+  "license": "ISC"
+}
