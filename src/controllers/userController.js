@@ -1,9 +1,12 @@
 import UserInfos from "../models/user";
+import bcrypt from "bcrypt";
 
 class UserController {
   //Create user in db
 
   static async createUser(req, res) {
+    const hashPassword = bcrypt.hashSync(req.body.password, 10);
+    req.body.password = hashPassword;
     const user = await UserInfos.create(req.body);
     if (!user) {
       return res.status(404).json({ error: "user not registered" });
@@ -51,9 +54,25 @@ class UserController {
       return res.status(404).json({ error: "user not found to delete" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "user deleted successfully"});
+    return res.status(200).json({ message: "user deleted successfully" });
+  }
+
+  //login function
+
+  static async userLogin(req, res) {
+    const user = await UserInfos.findOne({ email: req.body.email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: "email not found! kindly register first" });
+    }
+
+    if (bcrypt.compareSync(req.body.password, user.password)) {
+      return res.status(200).json({ message: "succefully logged in" });
+    }
+
+    return res.status(400).json({ error: "Password is wrong" });
   }
 }
 
