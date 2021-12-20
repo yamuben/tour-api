@@ -17,7 +17,19 @@ const tourSchema = new mongoose.Schema({
   phone: String,
   price: Number,
   tripDescription: String,
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+  },
 });
+
+tourSchema.pre(/^find/,function (next){
+  this.populate({
+    path:"user",
+    select:"lastName email address"
+  });
+  next();
+})
 
 const Tour = mongoose.model("Tour", tourSchema);
 

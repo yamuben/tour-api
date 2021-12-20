@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema(
             type:String,
             default:"Rwanda"
         },
+        role:{
+            type:String,
+            default:"user",
+            enum:["admin", "user"]
+
+        },
         gender:{
             type:String,
             enum:["male","female","other", "not-say"],
