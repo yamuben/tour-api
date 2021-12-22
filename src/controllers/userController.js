@@ -1,7 +1,7 @@
 import UserInfos from "../models/user";
 import bcrypt from "bcrypt";
 import TokenAuth from "../helpers/tokenAuth";
-
+import BookInfos from "../models/book";
 class UserController {
   //Create user in db
 
@@ -74,10 +74,27 @@ class UserController {
       const token = TokenAuth.tokenGenerator({ user: user });
       return res
         .status(200)
-        .json({ message: "succefully logged in", token: token,data:user });
+        .json({ message: "succefully logged in", token: token, data: user });
     }
 
     return res.status(400).json({ error: "Password is wrong" });
+  }
+
+  //Bookking functions
+
+  static async bookTour(req, res) {
+    const bookData = {
+      user: req.user._id,
+      tour: req.params.id,
+    };
+    
+    const book = await BookInfos.create(bookData);
+
+    if (!book) {
+      return res.status(404).json({ error: "failed to book" });
+    }
+
+    return res.status(200).json({ message: "Booked successfully", data: book });
   }
 }
 
