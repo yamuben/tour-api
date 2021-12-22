@@ -18,8 +18,12 @@ class TokenAuth {
   }
 
   static decodeToken(token) {
-    const data = jwt.verify(token, process.env.JWT_KEY);
-    return data;
+    try {
+      const data = jwt.verify(token, process.env.JWT_KEY);
+      return data;
+    } catch (er) {
+        return er;
+    }
   }
 }
 
