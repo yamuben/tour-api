@@ -16,8 +16,6 @@ userRouter.post(
 );
 userRouter.post("/login", UserController.userLogin);
 userRouter.get("/all", UserController.getAllUsers);
-userRouter.get("/:id", UserController.getOneUser);
-userRouter.delete("/:id", UserController.deleteOneUser);
 
 //booking paths
 userRouter.post(
@@ -26,5 +24,26 @@ userRouter.post(
   verifyAccess("user"),
   UserController.bookTour
 );
+
+userRouter.get("/books/all", UserController.getAllBookings);
+userRouter.get(
+  "/books/me",
+  verifyToken,
+  verifyAccess("user"),
+  UserController.getAllBookingsByUser
+);
+userRouter.get(
+  "/books/:idtour",
+  verifyToken,
+  verifyAccess("admin"),
+  UserController.getAllBookingsByTourId
+);
+
+
+
+
+userRouter.get("/profile/:id", UserController.getOneUser);
+userRouter.delete("/profile/:id", UserController.deleteOneUser);
+// userRouter.get("/bookings",UserController.getaAllBookingByUserId);
 
 export default userRouter;
