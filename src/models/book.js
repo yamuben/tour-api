@@ -24,7 +24,7 @@ const bookSchema = new mongoose.Schema(
 bookSchema.pre(/^find/,function (next){
     this.populate({
       path:"user",
-      select:"firstName lastName email gender address"
+      select:"firstName lastName phone email gender address"
     }).populate({
         path:"tour",
     });

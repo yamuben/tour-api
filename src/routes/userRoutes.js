@@ -32,6 +32,12 @@ userRouter.get(
   verifyAccess("user"),
   UserController.getAllBookingsByUser
 );
+userRouter.patch(
+  "/book/status",
+  verifyToken,
+  verifyAccess("admin"),
+  UserController.changeBookStatus
+);
 userRouter.get(
   "/books/:idtour",
   verifyToken,
@@ -39,11 +45,7 @@ userRouter.get(
   UserController.getAllBookingsByTourId
 );
 
-
-
-
 userRouter.get("/profile/:id", UserController.getOneUser);
 userRouter.delete("/profile/:id", UserController.deleteOneUser);
-// userRouter.get("/bookings",UserController.getaAllBookingByUserId);
 
 export default userRouter;

@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import TokenAuth from "../helpers/tokenAuth";
 import BookInfos from "../models/book";
 import TourInfos from "../models/tour";
+import sendSms from "../helpers/sendSms";
 class UserController {
   //Create user in db
 
@@ -134,14 +135,27 @@ class UserController {
     return res.status(200).json({ message: "success", data: books });
   }
 
-  static async getaAllBookingByUserId(req, res) {
-    console.log("hey what is happening");
-    const bookings = await BookInfos.find();
-    if (!bookings) {
-      return res.status(404).json({ error: "not found" });
+  // accept / decline /cancel tour booking
+  static async changeBookStatus(req, res) {
+    const { id, status } = req.body;
+    const book = await BookInfos.findByIdAndUpdate(
+      id,
+      { status: status },
+      { new: true }
+    );
+
+    if (!book) {
+      return res.status(404).json({ error: "failed to update status" });
     }
 
-    return res.status(200).json({ message: "success", data: bookings });
+    sendSms(
+      book.user.lastName,
+      book.tour.title,
+      book.status,
+      book._id,
+      book.user.phone
+    );
+    return res.status(200).json({ message: "success", data: book });
   }
 }
 
