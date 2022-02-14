@@ -1,5 +1,6 @@
 import TokenAuth from "../helpers/tokenAuth";
 import userInfos from "../models/user";
+import userVoteInfos from "../models/KakaUser";
 
 const isUserExist = async (req, res, next) => {
   try {
@@ -20,12 +21,17 @@ const isUserExist = async (req, res, next) => {
     const user = await userInfos.findById(req.user._id);
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ error: "User not found, You are not authorised" });
+      const userVote = await userVoteInfos.findById(req.user._id);
+      if (!userVote) {
+        return res
+          .status(404)
+          .json({ error: "User not found in votes, You are not authorised" });
+      } else {
+        return next();
+      }
+    } else {
+      return next();
     }
-
-    return next();
   } catch (err) {
     console.log(err);
   }

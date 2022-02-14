@@ -2,17 +2,21 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cors from "cors";
 import userRouter from "./src/routes/userRoutes";
 import tourRoutes from "./src/routes/tourRoutes";
+import voteRoutes from "./src/routes/votesRoute";
 
 dotenv.config("./.env");
 
 const app = express();
+app.use(cors())
 
 app.use(bodyParser.json());
 
 app.use("/user",userRouter);
 app.use("/tour",tourRoutes);
+app.use("/vote",voteRoutes);
  
 
 app.use("/", (req, res) => res.status(400).json({
