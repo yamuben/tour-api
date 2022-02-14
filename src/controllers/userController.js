@@ -2,6 +2,8 @@ import UserInfos from "../models/user";
 import bcrypt from "bcrypt";
 import TokenAuth from "../helpers/tokenAuth";
 import BookInfos from "../models/book";
+import TourInfos from "../models/tour";
+import sendSms from "../helpers/sendSms";
 class UserController {
   //Create user in db
 
@@ -87,14 +89,73 @@ class UserController {
       user: req.user._id,
       tour: req.params.id,
     };
-    
+
     const book = await BookInfos.create(bookData);
+
+    const tour = await TourInfos.findById(req.params.id);
+    const tourSeats = tour.seats - 1;
+    await TourInfos.findByIdAndUpdate(req.params.id, { seats: tourSeats });
 
     if (!book) {
       return res.status(404).json({ error: "failed to book" });
     }
 
     return res.status(200).json({ message: "Booked successfully", data: book });
+  }
+
+  //get all Bookes
+
+  static async getAllBookings(req, res) {
+    const books = await BookInfos.find();
+
+    if (!books) {
+      return res.status(404).json({ error: "Book Not found" });
+    }
+
+    return res.status(200).json({ message: "Success", data: books });
+  }
+  static async getAllBookingsByUser(req, res) {
+    // console.log(req.user)
+    const books = await BookInfos.find({ user: req.user._id });
+
+    if (!books) {
+      return res.status(404).json({ error: "Book Not found" });
+    }
+
+    return res.status(200).json({ message: "Success", data: books });
+  }
+
+  static async getAllBookingsByTourId(req, res) {
+    const books = await BookInfos.find({ tour: req.params.idtour });
+
+    if (!books) {
+      return res.status(404).json({ error: "book not found" });
+    }
+
+    return res.status(200).json({ message: "success", data: books });
+  }
+
+  // accept / decline /cancel tour booking
+  static async changeBookStatus(req, res) {
+    const { id, status } = req.body;
+    const book = await BookInfos.findByIdAndUpdate(
+      id,
+      { status: status },
+      { new: true }
+    );
+
+    if (!book) {
+      return res.status(404).json({ error: "failed to update status" });
+    }
+
+    sendSms(
+      book.user.lastName,
+      book.tour.title,
+      book.status,
+      book._id,
+      book.user.phone
+    );
+    return res.status(200).json({ message: "success", data: book });
   }
 }
 
