@@ -6,7 +6,10 @@ class VotesController {
   //create voters data
   static async registerVoter(req, res) {
     const numberUsers = await kakaUser.find();
-    req.body.code=numberUsers.length<10? "000"+(numberUsers.length+1):"00"+(numberUsers.length+1);
+    req.body.code =
+      numberUsers.length < 10
+        ? "000" + (numberUsers.length + 1)
+        : "00" + (numberUsers.length + 1);
     const Voter = await kakaUser.create(req.body);
 
     if (!Voter) {
@@ -69,6 +72,30 @@ class VotesController {
       message: "vote  user, successfully",
       data: itora,
     });
+  }
+
+  //get all tours
+  static async getOneVotedUser(req, res) {
+    const id = req.params.id;
+
+    const userRecheck = await kakaUser.findById(id);
+    if (!userRecheck) {
+      return res.status(404).json({ error: "failed to fetch user" });
+    } else if (!userRecheck.recheck) {
+      await kakaUser.findByIdAndUpdate(id, { recheck: true }, { new: true });
+
+      const oneVotedUser = await votes.findOne({ uwatoye: id });
+
+      if (!oneVotedUser) {
+        return res.status(404).json({ error: "failed to fetch user" });
+      }
+      return res.status(200).json({
+        message: "Voted User get successfully",
+        data: oneVotedUser,
+      });
+    } else {
+      return res.status(404).json({ error: "You have arleady Rechecked!" });
+    }
   }
 
   //get all tours
