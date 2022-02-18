@@ -20,6 +20,10 @@ const kakaUserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    recheck:{
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,

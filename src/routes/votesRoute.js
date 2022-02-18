@@ -18,6 +18,7 @@ vouteRoute.post(
   "/create/vote",verifyToken,
   VotesController.voteUser
 );
+vouteRoute.get("/one/voted/:id", VotesController.getOneVotedUser);
 vouteRoute.get("/all/votes", VotesController.getAllVoteUsers);
 vouteRoute.get("/all/users", VotesController.getAllUsers);
 
